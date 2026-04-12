@@ -171,7 +171,7 @@ struct NotchPanelView: View {
                     bottomRadius: shouldShowExpanded ? 24 : 12,
                     minHeight: notchHeight
                 )
-                .fill(.black)
+                .fill(.ultraThinMaterial)
             )
             .offset(y: curtainOffset)
             .opacity(curtainOpacity)
