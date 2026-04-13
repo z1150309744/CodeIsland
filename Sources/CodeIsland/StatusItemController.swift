@@ -1,34 +1,14 @@
 import AppKit
 
-extension UserDefaults {
-    @objc dynamic var hideWhenNoSession: Bool {
-        bool(forKey: SettingsKey.hideWhenNoSession)
-    }
-}
-
 @MainActor
 final class StatusItemController: NSObject {
     static let shared = StatusItemController()
 
     private var statusItem: NSStatusItem?
-    private var observation: NSKeyValueObservation?
     private lazy var menu: NSMenu = makeMenu()
 
     func startObserving() {
-        syncVisibility()
-        observation = UserDefaults.standard.observe(
-            \.hideWhenNoSession, options: [.new]
-        ) { [weak self] _, _ in
-            Task { @MainActor in self?.syncVisibility() }
-        }
-    }
-
-    private func syncVisibility() {
-        if SettingsManager.shared.hideWhenNoSession {
-            showStatusItem()
-        } else {
-            hideStatusItem()
-        }
+        showStatusItem()
     }
 
     private func showStatusItem() {
@@ -39,17 +19,10 @@ final class StatusItemController: NSObject {
                 icon.size = NSSize(width: 18, height: 18)
                 button.image = icon
                 button.imageScaling = .scaleProportionallyDown
-                button.toolTip = "CodeIsland"
             }
             item.menu = menu
             statusItem = item
         }
-    }
-
-    private func hideStatusItem() {
-        guard let statusItem else { return }
-        NSStatusBar.system.removeStatusItem(statusItem)
-        self.statusItem = nil
     }
 
     private func makeMenu() -> NSMenu {

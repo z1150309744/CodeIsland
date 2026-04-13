@@ -6,7 +6,7 @@
 
 ## Overview
 
-Add a new status bar icon to display real-time AI coding agent session counts (active/idle), positioned to the right of the existing menu icon. Clicking the icon reveals a popup menu listing all sessions with their status indicators.
+Add a new status bar icon to display real-time AI coding agent session counts (active/idle), positioned to the left of the existing menu icon. Clicking the icon reveals a popup menu listing all sessions with their status indicators.
 
 ## Requirements
 
@@ -14,7 +14,7 @@ Add a new status bar icon to display real-time AI coding agent session counts (a
 |------|----------|
 | Function | Display active/idle agent counts |
 | Format | SF Symbols icon + numbers (e.g., `🤖 3/1`) |
-| Position | New independent icon, right side of menu icon |
+| Position | New independent icon, left side of menu icon |
 | Interaction | Click to popup session detail menu |
 | Menu Content | Agent name + status icon only (e.g., `Claude 🟢`) |
 
@@ -160,8 +160,8 @@ hookServer = HookServer(appState: appState)
 ```
 
 **Positioning mechanism:**
-- macOS status items are added in creation order, appearing from right to left
-- StatusIndicatorController initialized AFTER StatusItemController → appears on the RIGHT side
+- macOS status items created later appear further LEFT in the menu bar
+- StatusIndicatorController initialized AFTER StatusItemController → appears on the LEFT side
 - Order in menu bar: `[Status Indicator] [Menu Icon] ... other system icons`
 
 ## Display Format
