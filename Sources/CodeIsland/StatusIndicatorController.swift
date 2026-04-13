@@ -49,58 +49,40 @@ final class StatusIndicatorController: NSObject {
 
     private func makeMenu() -> NSMenu {
         let menu = NSMenu()
-        menu.autoenablesItems = false
+
+        let settingsItem = NSMenuItem(
+            title: L10n.shared["settings_ellipsis"],
+            action: #selector(openSettings),
+            keyEquivalent: ""
+        )
+        settingsItem.target = self
+        menu.addItem(settingsItem)
+
+        menu.addItem(.separator())
+
+        let quitItem = NSMenuItem(
+            title: L10n.shared["quit"],
+            action: #selector(quitApp),
+            keyEquivalent: ""
+        )
+        quitItem.target = self
+        menu.addItem(quitItem)
+
         return menu
     }
 
     private func rebuildMenu() {
-        guard let menu = statusItem?.menu, let appState else { return }
-        menu.removeAllItems()
-
-        let sortedIds = appState.sessions.keys.sorted()
-        let displayIds = sortedIds.prefix(10)
-
-        if displayIds.isEmpty {
-            let item = NSMenuItem(title: L10n.shared["status_no_sessions"], action: nil, keyEquivalent: "")
-            item.isEnabled = false
-            menu.addItem(item)
-            return
-        }
-
-        for id in displayIds {
-            guard let session = appState.sessions[id] else { continue }
-            let emoji = statusEmoji(for: session.status)
-            let label = session.sourceLabel.padding(toLength: 12, withPad: " ", startingAt: 0)
-            let item = NSMenuItem(title: "\(label)\(emoji)", action: nil, keyEquivalent: "")
-            item.isEnabled = false
-            menu.addItem(item)
-        }
-
-        if sortedIds.count > 10 {
-            let remaining = sortedIds.count - 10
-            let moreItem = NSMenuItem(
-                title: String(format: L10n.shared["status_more"], remaining),
-                action: nil, keyEquivalent: ""
-            )
-            moreItem.isEnabled = false
-            menu.addItem(moreItem)
-        }
-
-        menu.addItem(NSMenuItem.separator())
-
-        let activeCount = appState.sessions.values.filter { $0.status == .running || $0.status == .processing }.count
-        let totalCount = appState.sessions.count
-        let summary = "\(L10n.shared["status_active_count"]) \(activeCount)  \(L10n.shared["status_total_count"]) \(totalCount)"
-        let summaryItem = NSMenuItem(title: summary, action: nil, keyEquivalent: "")
-        summaryItem.isEnabled = false
-        menu.addItem(summaryItem)
+        // Menu is static (Settings + Quit), no rebuild needed
     }
 
-    private func statusEmoji(for status: AgentStatus) -> String {
-        switch status {
-        case .running, .processing: return "🟢"
-        case .waitingApproval, .waitingQuestion: return "🟡"
-        case .idle: return "⚪"
+    @objc private func openSettings() {
+        Task { @MainActor in
+            SettingsWindowController.shared.show()
         }
     }
+
+    @objc private func quitApp() {
+        NSApp.terminate(nil)
+    }
+
 }
