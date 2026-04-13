@@ -192,6 +192,7 @@ final class L10n: ObservableObject {
         "settings_title": "CodeIsland Settings",
 
         // Menu
+        "session_list": "Session List",
         "settings_ellipsis": "Settings...",
         "check_for_updates": "Check for Updates...",
         "export_diagnostics": "Export Diagnostics...",
@@ -409,6 +410,7 @@ final class L10n: ObservableObject {
         "settings_title": "CodeIsland 设置",
 
         // Menu
+        "session_list": "会话列表",
         "settings_ellipsis": "设置...",
         "check_for_updates": "检查更新...",
         "export_diagnostics": "导出诊断信息...",
@@ -626,6 +628,7 @@ final class L10n: ObservableObject {
         "settings_title": "CodeIsland Ayarları",
 
         // Menu
+        "session_list": "Oturum Listesi",
         "settings_ellipsis": "Ayarlar...",
         "check_for_updates": "Güncellemeleri Kontrol Et...",
         "export_diagnostics": "Tanılamaları Dışa Aktar...",

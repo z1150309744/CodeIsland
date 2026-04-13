@@ -1,4 +1,5 @@
 import AppKit
+import SwiftUI
 import CodeIslandCore
 
 @MainActor
@@ -50,6 +51,16 @@ final class StatusIndicatorController: NSObject {
     private func makeMenu() -> NSMenu {
         let menu = NSMenu()
 
+        let sessionListItem = NSMenuItem(
+            title: L10n.shared["session_list"],
+            action: #selector(togglePanel),
+            keyEquivalent: ""
+        )
+        sessionListItem.target = self
+        menu.addItem(sessionListItem)
+
+        menu.addItem(.separator())
+
         let settingsItem = NSMenuItem(
             title: L10n.shared["settings_ellipsis"],
             action: #selector(openSettings),
@@ -72,7 +83,22 @@ final class StatusIndicatorController: NSObject {
     }
 
     private func rebuildMenu() {
-        // Menu is static (Settings + Quit), no rebuild needed
+        // Menu is static, no rebuild needed
+    }
+
+    @objc private func togglePanel() {
+        guard let appState else { return }
+        if appState.surface.isExpanded {
+            withAnimation(NotchAnimation.close) { appState.surface = .collapsed }
+        } else {
+            withAnimation(NotchAnimation.open) {
+                appState.surface = .sessionList
+                appState.cancelCompletionQueue()
+                if appState.activeSessionId == nil {
+                    appState.activeSessionId = appState.sessions.keys.sorted().first
+                }
+            }
+        }
     }
 
     @objc private func openSettings() {
