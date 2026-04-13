@@ -42,10 +42,8 @@ final class StatusIndicatorController: NSObject {
         let activeCount = appState.sessions.values
             .filter { $0.status == .running || $0.status == .processing }
             .count
-        let idleCount = appState.sessions.values
-            .filter { $0.status == .idle }
-            .count
-        button.title = "🤖 \(activeCount)/\(idleCount)"
+        let totalCount = appState.sessions.count
+        button.title = "🤖 \(activeCount)/\(totalCount)"
         rebuildMenu()
     }
 
@@ -91,8 +89,8 @@ final class StatusIndicatorController: NSObject {
         menu.addItem(NSMenuItem.separator())
 
         let activeCount = appState.sessions.values.filter { $0.status == .running || $0.status == .processing }.count
-        let idleCount = appState.sessions.values.filter { $0.status == .idle }.count
-        let summary = "\(L10n.shared["status_active_count"]) \(activeCount)  \(L10n.shared["status_idle_count"]) \(idleCount)"
+        let totalCount = appState.sessions.count
+        let summary = "\(L10n.shared["status_active_count"]) \(activeCount)  \(L10n.shared["status_total_count"]) \(totalCount)"
         let summaryItem = NSMenuItem(title: summary, action: nil, keyEquivalent: "")
         summaryItem.isEnabled = false
         menu.addItem(summaryItem)

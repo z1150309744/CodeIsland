@@ -28,11 +28,11 @@ struct NotchPanelView: View {
     /// First launch / no-session state should still render a visible marker so the app
     /// doesn't disappear completely behind the physical notch.
     private var showIdleIndicator: Bool {
-        !isActive && !hideWhenNoSession
+        false
     }
     /// Whether the bar content should be visible (respects hideWhenNoSession)
     private var showBar: Bool {
-        isActive && !(hideWhenNoSession && appState.activeSessionCount == 0)
+        isActive && appState.surface.isExpanded && !(hideWhenNoSession && appState.activeSessionCount == 0)
     }
     private var shouldShowExpanded: Bool {
         showBar && appState.surface.isExpanded
@@ -58,11 +58,8 @@ struct NotchPanelView: View {
         if showIdleIndicator { return idleHovered ? nw + compactWingWidth * 2 + 80 : nw + compactWingWidth * 2 }
         if !isActive { return hasNotch ? notchW - 20 : nw }
         if shouldShowExpanded { return min(max(nw + 200, 580), maxWidth) }
-        let wing = compactWingWidth
-        let extra: CGFloat = appState.status == .idle ? 0 : 20
-        // Reserve space for tool status — proportional to screen width
-        let toolExtra: CGFloat = displayedToolStatus ? (hasNotch ? screenWidth * 0.03 : screenWidth * 0.04) : 0
-        return nw + wing * 2 + extra + toolExtra
+        // Collapsed with active sessions: minimal notch-only width (transparent hover zone)
+        return hasNotch ? notchW - 20 : nw
     }
 
     var body: some View {
@@ -172,6 +169,7 @@ struct NotchPanelView: View {
                     minHeight: notchHeight
                 )
                 .fill(.ultraThinMaterial)
+                .opacity(showBar || shouldShowExpanded ? 1 : 0)
             )
             .offset(y: curtainOffset)
             .opacity(curtainOpacity)
