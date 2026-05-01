@@ -175,6 +175,11 @@ struct TerminalActivator {
             return
         }
 
+        if lower.contains("vibe99") {
+            activateVibe99(cwd: session.cwd)
+            return
+        }
+
         // --- Other terminals (Alacritty, Warp, Hyper, Tabby, Rio, etc.) ---
         // Try window-level matching via System Events (title contains CWD folder name),
         // similar to IDE window matching. Falls back to app-level if no match.
@@ -851,6 +856,18 @@ struct TerminalActivator {
                 args += ["--workspace", wid]
             }
             _ = runProcess(cmuxBin, args: args)
+        }
+    }
+
+    // MARK: - Vibe99 (Deep Link: focus pane by CWD)
+
+    private static func activateVibe99(cwd: String?) {
+        activateByBundleId("com.vibe99.app")
+        guard let cwd = cwd, !cwd.isEmpty else { return }
+        guard let encoded = cwd.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: "vibe99://focus?cwd=\(encoded)") else { return }
+        DispatchQueue.main.async {
+            NSWorkspace.shared.open(url)
         }
     }
 }
