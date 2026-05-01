@@ -19,7 +19,9 @@ final class StatusIndicatorController: NSObject {
     private func createStatusItem() {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = item.button {
-            button.title = "🤖 0/0"
+            button.image = drawStatusIcon(color: .gray)
+            button.imagePosition = .imageLeft
+            button.title = " 0/0"
         }
         item.menu = makeMenu()
         statusItem = item
@@ -44,7 +46,19 @@ final class StatusIndicatorController: NSObject {
             .filter { $0.status == .running || $0.status == .processing }
             .count
         let totalCount = appState.sessions.count
-        button.title = "🤖 \(activeCount)/\(totalCount)"
+
+        let color: NSColor
+        if totalCount > 0 && activeCount == totalCount {
+            color = .systemRed
+        } else if activeCount > 0 {
+            color = .systemGreen
+        } else {
+            color = .gray
+        }
+
+        button.image = drawStatusIcon(color: color)
+        button.imagePosition = .imageLeft
+        button.title = " \(activeCount)/\(totalCount)"
         rebuildMenu()
     }
 
@@ -58,6 +72,14 @@ final class StatusIndicatorController: NSObject {
         )
         sessionListItem.target = self
         menu.addItem(sessionListItem)
+
+        let clearItem = NSMenuItem(
+            title: L10n.shared["clear_all_sessions"],
+            action: #selector(clearAllSessions),
+            keyEquivalent: ""
+        )
+        clearItem.target = self
+        menu.addItem(clearItem)
 
         menu.addItem(.separator())
 
@@ -101,6 +123,13 @@ final class StatusIndicatorController: NSObject {
         }
     }
 
+    @objc private func clearAllSessions() {
+        guard let appState else { return }
+        appState.sessions.removeAll()
+        withAnimation(NotchAnimation.close) { appState.surface = .collapsed }
+        updateIndicator()
+    }
+
     @objc private func openSettings() {
         Task { @MainActor in
             SettingsWindowController.shared.show()
@@ -109,6 +138,31 @@ final class StatusIndicatorController: NSObject {
 
     @objc private func quitApp() {
         NSApp.terminate(nil)
+    }
+
+    /// Draw a status ring icon in the given color (18×18 pt).
+    private func drawStatusIcon(color: NSColor) -> NSImage {
+        let size = NSSize(width: 18, height: 18)
+        let image = NSImage(size: size, flipped: false) { rect in
+            let center = NSPoint(x: 9, y: 9)
+
+            // Outer ring: diameter 12pt, stroke 1.5pt, round cap
+            let ring = NSBezierPath()
+            ring.appendArc(withCenter: center, radius: 5.25, startAngle: 0, endAngle: 360)
+            ring.lineWidth = 1.5
+            ring.lineCapStyle = .round
+            color.setStroke()
+            ring.stroke()
+
+            // Center dot: diameter 3pt, solid fill
+            let dot = NSBezierPath(ovalIn: NSRect(x: 7.5, y: 7.5, width: 3, height: 3))
+            color.setFill()
+            dot.fill()
+
+            return true
+        }
+        image.isTemplate = false
+        return image
     }
 
 }

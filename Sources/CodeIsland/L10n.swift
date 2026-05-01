@@ -193,6 +193,7 @@ final class L10n: ObservableObject {
 
         // Menu
         "session_list": "Session List",
+        "clear_all_sessions": "Clear All Sessions",
         "settings_ellipsis": "Settings...",
         "check_for_updates": "Check for Updates...",
         "export_diagnostics": "Export Diagnostics...",
@@ -411,6 +412,7 @@ final class L10n: ObservableObject {
 
         // Menu
         "session_list": "会话列表",
+        "clear_all_sessions": "清除所有会话",
         "settings_ellipsis": "设置...",
         "check_for_updates": "检查更新...",
         "export_diagnostics": "导出诊断信息...",
@@ -629,6 +631,7 @@ final class L10n: ObservableObject {
 
         // Menu
         "session_list": "Oturum Listesi",
+        "clear_all_sessions": "Tüm Oturumları Temizle",
         "settings_ellipsis": "Ayarlar...",
         "check_for_updates": "Güncellemeleri Kontrol Et...",
         "export_diagnostics": "Tanılamaları Dışa Aktar...",
