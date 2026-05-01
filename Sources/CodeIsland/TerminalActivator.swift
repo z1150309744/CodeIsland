@@ -13,6 +13,7 @@ struct TerminalActivator {
         ("kitty", "net.kovidgoyal.kitty"),
         ("Alacritty", "org.alacritty"),
         ("Warp", "dev.warp.Warp-Stable"),
+        ("Vibe99", "com.vibe99.app"),
         ("Terminal", "com.apple.Terminal"),
     ]
 
@@ -720,6 +721,7 @@ struct TerminalActivator {
         else if lower.contains("alacritty") || lower.contains("lacritty") { name = "Alacritty" }
         else if lower.contains("kitty") { name = "kitty" }
         else if lower.contains("warp") { name = "Warp" }
+        else if lower.contains("vibe99") { name = "Vibe99" }
         else if lower.contains("hyper") { name = "Hyper" }
         else if lower.contains("tabby") { name = "Tabby" }
         else if lower.contains("rio") { name = "Rio" }
